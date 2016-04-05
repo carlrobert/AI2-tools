@@ -21,10 +21,11 @@ fileCount = 0
 
 target = open(files[fileCount], 'w')
 target.truncate()
+p = re.compile(r'(Blockly[^\s]+)\s=\s(?P<quote>[\'"])(.*)(?P=quote)', re.IGNORECASE)
 
 with open(filename, encoding='utf-8') as inf:
     for line in inf:
-        m = re.search(r'Blockly\.Msg\.([_A-Z]+)\s=\s(?P<quote>[\'"])(.*)(?P=quote)', line)
+        m = p.search(line)
         if m and fileCount < 2:
             if fileCount == 0:
                 # Switch output to .po file upon first match
@@ -32,10 +33,12 @@ with open(filename, encoding='utf-8') as inf:
                 fileCount += 1
                 target = open(files[fileCount], 'w')
                 target.truncate()
-            target.write(m.group(1) + ' = ' + m.group(3))
+            target.write(m.group(1) + ' = ' + m.group(3) + '\n')
+            print(line)
         else:
             if fileCount == 1:
                 # Switch to postamble upon first mismatch
+                print(line)
                 target.close()
                 fileCount += 1
                 target = open(files[fileCount], 'w')
