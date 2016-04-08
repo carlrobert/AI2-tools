@@ -1,9 +1,8 @@
 #  -*- coding: utf-8 -*-
 # js2prop.py: App Inventor 2 (AI2) translation helper
-# Split _messages.js into a preamble, properties file (po2prop) and postamble
-# The properties file can then be used as input to po2prop
+# Split _messages.js into a preamble, a properties file (usable with po2prop) and a postamble
 # 
-# The properties are represented as assignment in the .js file:
+# The properties are represented as assignments in the .js file:
 #     Blockly.Msg.LANG_LISTS_LOOKUP_IN_PAIRS_INPUT = "parvis uppslagning  nyckel %1 par %2 hittadesInte %3"
 #
 # In the .properties file this corresponds to
@@ -15,32 +14,40 @@
 import re
 from sys import argv
 
-script, filename = argv
-files = ['1-preamble.js', '2-prop.po', '3-postamble.js']
-fileCount = 0
+def main():
+	script, filename = argv
+	files = ['1-preamble-' + filename, '2-' + filename + '.properties', '3-postamble-' + filename]
+	preamble, properties, postamble = 0, 1, 2
+	fileCount = 0
 
-target = open(files[fileCount], 'w')
-target.truncate()
-p = re.compile(r'(Blockly[^\s]+)\s=\s(?P<quote>[\'"])(.*)(?P=quote)', re.IGNORECASE)
+	target = open(files[fileCount], 'w')
+	target.truncate()
+	p = re.compile(r'(Blockly[^\s]+)\s=\s(?P<quote>[\'"])(.*)(?P=quote)', re.IGNORECASE)
 
-with open(filename, encoding='utf-8') as inf:
-    for line in inf:
-        m = p.search(line)
-        if m and fileCount < 2:
-            if fileCount == 0:
-                # Switch output to .po file upon first match
-                target.close()
-                fileCount += 1
-                target = open(files[fileCount], 'w')
-                target.truncate()
-            target.write(m.group(1) + ' = ' + m.group(3) + '\n')
-            print(line)
-        else:
-            if fileCount == 1:
-                # Switch to postamble upon first mismatch
-                print(line)
-                target.close()
-                fileCount += 1
-                target = open(files[fileCount], 'w')
-                target.truncate()
-            target.write(line)
+	with open(filename, encoding='utf-8') as inf:
+		for line in inf:
+			if fileCount == preamble:
+				m = p.search(line)
+				if m:
+					target.close()
+					fileCount = 1
+					target = open(files[fileCount], 'w')
+					target.truncate()
+				target.write(line)
+			elif fileCount == properties:
+				m = p.search(line)
+				if m:
+					target.write(m.group(1) + ' = ' + m.group(3) + '\n')
+				else:           
+					target.close()
+					fileCount = 2
+					target = open(files[fileCount], 'w')
+					target.truncate()
+					target.write(line)
+			elif fileCount == postamble:
+				target.write(line)
+			else:
+				sys.exit('Such error. Many fail')
+
+if __name__ == "__main__":
+    main()
