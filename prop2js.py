@@ -1,7 +1,7 @@
 #  -*- coding: utf-8 -*-
 # prop2js.py: App Inventor 2 (AI2) translation helper
 # Converts a properties file into a .js snippet suitable for AI2
-# Concatenate the preamble, this script output and the postamble to recover a usable .js file
+# Concatenate the preamble, the output from this script and the postamble to recover a usable .js file
 # 
 # The properties are represented as assignment in the .js file:
 #     Blockly.Msg.LANG_LISTS_LOOKUP_IN_PAIRS_INPUT = "parvis uppslagning  nyckel %1 par %2 hittadesInte %3"
