@@ -16,7 +16,7 @@ from sys import argv
 
 def main():
 	script, filename = argv
-	files = ['1-preamble-' + filename, '2-' + filename + '.properties', '3-postamble-' + filename]
+	files = ['1-pre-' + filename, '2-' + filename + '.properties', '3-post-' + filename]
 	preamble, properties, postamble = 0, 1, 2
 	fileCount = 0
 
@@ -51,3 +51,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#TODO: Make sure beginning-of-line spaces are kept
