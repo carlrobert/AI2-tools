@@ -1,6 +1,7 @@
 #!
 # _messages.sh
 # Update _messages.js based on the latest pootle translation (OdeMessages.po)
+# Output: _messages.js.NEW
 FILE=_messages.js
 curl -LO http://pootle.appinventor.mit.edu/download/sv/app-inventor/_messages.po
 curl -LOk https://github.com/mit-cml/appinventor-sources/raw/master/appinventor/blocklyeditor/src/msg/sv/$FILE
