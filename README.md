@@ -1,5 +1,5 @@
 # tools
-Utility software
+shell scripts for generating updated versions of OdeMessages_sv.properties and _messages.js
 
 Pootle inputs:
 * http://pootle.appinventor.mit.edu/download/sv/app-inventor/OdeMessages.po
