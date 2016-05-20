@@ -14,6 +14,11 @@
 import re
 from sys import argv
 
+def quote_leading_space(s):
+   if len(s) == 0 or s[0] != ' ':
+       return s
+   return '\\' + s
+
 def main():
     script, filename = argv
     files = ['1-pre-' + filename, '2-' + filename + '.properties', '3-post-' + filename]
@@ -22,7 +27,7 @@ def main():
 
     target = open(files[fileCount], 'w')
     target.truncate()
-    p = re.compile(r'(Blockly[^\s]+\s=\s)(?P<quote>[\'"])(.*)(?P=quote)', re.IGNORECASE)
+    p = re.compile(r'(Blockly[^\s=]+)\s=\s\"(.*)"$', re.IGNORECASE)
 
     with open(filename, encoding='utf-8') as inf:
         for line in inf:
@@ -31,14 +36,14 @@ def main():
                 if m:
                     target.close()
                     fileCount = properties
-                    target = open(files[fileCount], 'w')
+                    target = open(files[fileCount], 'w', encoding='utf-8')
                     target.truncate()
                 else:
                     target.write(line)
             if fileCount == properties:
                 m = p.search(line)
                 if m:
-                    target.write(m.group(1) + m.group(2) + '\n')
+                    target.write(''.join([m.group(1), ' = ', quote_leading_space(m.group(2)), '\n']))
                 else:           
                     target.close()
                     fileCount = postamble
